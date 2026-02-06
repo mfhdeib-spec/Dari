@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Header from "@/components/home/Header";
 import Hero from "@/components/home/Hero";
 import SearchBar from "@/components/home/SearchBar";
 import CategoryTabs from "@/components/home/CategoryTabs";
 import ProductGrid from "@/components/home/ProductGrid";
-import { homeCopy, type HomeLocale } from "@/lib/i18n/homeCopy";
+import { homeCopy } from "@/lib/i18n/homeCopy";
+import { useLocale } from "@/lib/i18n/useLocale";
 import {
   categories,
   products,
@@ -28,18 +29,12 @@ function matchesProductQuery(p: Product, query: string) {
 }
 
 export default function HomePageClient() {
-  const [locale, setLocale] = useState<HomeLocale>("en");
+  const { locale, setLocale } = useLocale("en");
   const [selectedCategory, setSelectedCategory] =
     useState<ProductCategoryKey>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const productsRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const el = document.documentElement;
-    el.lang = locale;
-    el.dir = locale === "ar" ? "rtl" : "ltr";
-  }, [locale]);
 
   const visibleProducts = useMemo(() => {
     return products.filter((p) => {

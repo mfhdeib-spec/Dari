@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { HomeLocale } from "@/lib/i18n/homeCopy";
 import type { Product } from "@/lib/mock/products";
 import ProductCard from "@/components/home/ProductCard";
@@ -26,12 +27,9 @@ export default function ProductGrid({
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
           {products.map((p) => (
-            <ProductCard
-              key={p.id}
-              locale={locale}
-              product={p}
-              stockLabel={stockLabel}
-            />
+            <Link key={p.id} href={`/product/${p.id}`} className="block">
+              <ProductCard locale={locale} product={p} stockLabel={stockLabel} />
+            </Link>
           ))}
         </div>
       )}

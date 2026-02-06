@@ -61,3 +61,17 @@ export function UserIcon({ title = "Account", ...props }: IconProps) {
   );
 }
 
+export function HeartIcon({ title = "Favorite", ...props }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <title>{title}</title>
+      <path
+        d="M12 20.5s-7-4.4-9.3-8.7C.9 8.3 2.6 5.5 5.8 5.2c1.6-.2 3.1.6 4 1.8.8-1.2 2.3-2 4-1.8 3.2.3 4.9 3.1 3.1 6.6C19 16.1 12 20.5 12 20.5Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
