@@ -6,7 +6,10 @@ export function getSupabaseClient() {
   const { env, error } = getPublicEnv();
 
   if (error || !env) {
-    return { supabase: null as const, error: error ?? "Missing Supabase env." };
+    return {
+      supabase: null,
+      error: error ?? "Missing Supabase env.",
+    } as const;
   }
 
   return {
@@ -14,7 +17,7 @@ export function getSupabaseClient() {
       env.NEXT_PUBLIC_SUPABASE_URL,
       env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     ),
-    error: null as const,
+    error: null,
   };
 }
 
