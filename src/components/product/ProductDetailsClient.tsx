@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import Header from "@/components/home/Header";
+import { useCart } from "@/context/CartContext";
 import ProductCard from "@/components/home/ProductCard";
 import { HeartIcon } from "@/components/home/icons";
 import { homeCopy } from "@/lib/i18n/homeCopy";
@@ -18,7 +20,9 @@ type Props = {
 };
 
 export default function ProductDetailsClient({ product, youMightAlsoLike }: Props) {
+  const router = useRouter();
   const { locale, setLocale } = useLocale("en");
+  const { addItem } = useCart();
   const copy = homeCopy[locale];
   const pcopy = productCopy[locale];
 
@@ -45,7 +49,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
 
   return (
     <div className="min-h-screen bg-white">
-      <Header locale={locale} onLocaleChange={setLocale} />
+      <Header locale={locale} onLocaleChange={setLocale} showBackButton backLabel={pcopy.back} />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <section className="grid gap-10 lg:grid-cols-2 lg:gap-14">
@@ -136,8 +140,8 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
                 type="button"
                 className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-neutral-900 px-6 text-sm font-medium text-white hover:bg-neutral-800"
                 onClick={() => {
-                  // UI-only for now (mock)
-                  void selectedSize;
+                  addItem(product.id, selectedSize, quantity);
+                  router.push("/");
                 }}
               >
                 {pcopy.addToCart}

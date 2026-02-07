@@ -26,6 +26,10 @@ export const categories: Array<{
   { key: "crafts", label: { en: "Crafts", ar: "حِرف" } },
 ];
 
+export function getProductById(id: string): Product | undefined {
+  return products.find((p) => p.id === id);
+}
+
 export const products: Product[] = [
   {
     id: "p-blue-abaya",
