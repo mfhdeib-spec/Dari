@@ -50,7 +50,11 @@ export default function CheckoutCompletePage() {
           </p>
         ) : (
           <form
-            onSubmit={handleSubmit}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+            action="#"
             className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:items-stretch"
           >
             <input

@@ -64,7 +64,11 @@ export default function JoinBusinessPage() {
           </p>
         ) : (
           <form
-            onSubmit={handleSubmit}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+            action="#"
             className="mt-8 flex w-full flex-col gap-4"
           >
             <input
