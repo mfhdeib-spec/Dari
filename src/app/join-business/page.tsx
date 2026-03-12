@@ -6,7 +6,7 @@ import { homeCopy } from "@/lib/i18n/homeCopy";
 import { joinBusinessCopy } from "@/lib/i18n/joinBusinessCopy";
 import { useLocale } from "@/lib/i18n/useLocale";
 
-const TARGET_EMAIL = "m.f.hdeib@gmail.com";
+type Status = "idle" | "submitting" | "success" | "error";
 
 export default function JoinBusinessPage() {
   const { locale, setLocale } = useLocale();
@@ -15,16 +15,38 @@ export default function JoinBusinessPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [businessName, setBusinessName] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
 
   const allFilled =
     email.trim() !== "" && phone.trim() !== "" && businessName.trim() !== "";
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!allFilled) return;
-    const subject = "Join as a Business";
-    const body = `Email: ${email.trim()}\nPhone: ${phone.trim()}\nBusiness name: ${businessName.trim()}`;
-    window.location.href = `mailto:${TARGET_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    setStatus("submitting");
+    try {
+      const res = await fetch("/api/vendors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          phone: phone.trim(),
+          businessName: businessName.trim(),
+        }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setEmail("");
+        setPhone("");
+        setBusinessName("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
@@ -36,42 +58,57 @@ export default function JoinBusinessPage() {
           {bcopy.title}
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="mt-8 flex w-full flex-col gap-4"
-        >
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={bcopy.emailPlaceholder}
-            className="w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400"
-            required
-          />
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder={bcopy.phonePlaceholder}
-            className="w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400"
-            required
-          />
-          <input
-            type="text"
-            value={businessName}
-            onChange={(e) => setBusinessName(e.target.value)}
-            placeholder={bcopy.businessNamePlaceholder}
-            className="w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400"
-            required
-          />
-          <button
-            type="submit"
-            disabled={!allFilled}
-            className="mt-2 rounded-lg bg-neutral-900 px-6 py-3 text-sm font-medium text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+        {status === "success" ? (
+          <p className="mt-8 text-neutral-700" role="status">
+            {bcopy.success}
+          </p>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="mt-8 flex w-full flex-col gap-4"
           >
-            {bcopy.send}
-          </button>
-        </form>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={bcopy.emailPlaceholder}
+              disabled={status === "submitting"}
+              className="w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 disabled:opacity-70"
+              required
+            />
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder={bcopy.phonePlaceholder}
+              disabled={status === "submitting"}
+              className="w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 disabled:opacity-70"
+              required
+            />
+            <input
+              type="text"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder={bcopy.businessNamePlaceholder}
+              disabled={status === "submitting"}
+              className="w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400 disabled:opacity-70"
+              required
+            />
+            <button
+              type="submit"
+              disabled={!allFilled || status === "submitting"}
+              className="mt-2 rounded-lg bg-neutral-900 px-6 py-3 text-sm font-medium text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {status === "submitting" ? bcopy.submitting : bcopy.send}
+            </button>
+          </form>
+        )}
+
+        {status === "error" && (
+          <p className="mt-3 text-sm text-red-600" role="alert">
+            {bcopy.error}
+          </p>
+        )}
       </main>
     </div>
   );

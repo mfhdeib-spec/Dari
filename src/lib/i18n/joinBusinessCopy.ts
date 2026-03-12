@@ -8,6 +8,9 @@ export const joinBusinessCopy: Record<
     phonePlaceholder: string;
     businessNamePlaceholder: string;
     send: string;
+    submitting: string;
+    success: string;
+    error: string;
   }
 > = {
   en: {
@@ -16,6 +19,9 @@ export const joinBusinessCopy: Record<
     phonePlaceholder: "Enter phone number",
     businessNamePlaceholder: "Enter business name",
     send: "Send",
+    submitting: "Sending…",
+    success: "Thanks! We'll be in touch.",
+    error: "Something went wrong. Please try again.",
   },
   ar: {
     title: "شكراً لاهتمامكم.",
@@ -23,5 +29,8 @@ export const joinBusinessCopy: Record<
     phonePlaceholder: "أدخل رقم الهاتف",
     businessNamePlaceholder: "أدخل اسم المتجر",
     send: "إرسال",
+    submitting: "جاري الإرسال…",
+    success: "شكراً! سنتواصل معكم.",
+    error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
   },
 };

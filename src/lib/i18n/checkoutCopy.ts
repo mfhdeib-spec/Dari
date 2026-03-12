@@ -7,6 +7,9 @@ export const checkoutCopy: Record<
     description: string;
     emailPlaceholder: string;
     submit: string;
+    submitting: string;
+    success: string;
+    error: string;
   }
 > = {
   en: {
@@ -15,6 +18,9 @@ export const checkoutCopy: Record<
       "We aren't quite open for orders yet—we're still onboarding your favorite local shops.",
     emailPlaceholder: "Enter email",
     submit: "Submit",
+    submitting: "Submitting…",
+    success: "Thanks! We'll be in touch.",
+    error: "Something went wrong. Please try again.",
   },
   ar: {
     title: "اكتشفتمونا باكراً! 🎉",
@@ -22,5 +28,8 @@ export const checkoutCopy: Record<
       "لسنا مفتوحين للطلبات بعد—ما زلنا نضيف محلاتكم المحلية المفضلة.",
     emailPlaceholder: "أدخل البريد الإلكتروني",
     submit: "إرسال",
+    submitting: "جاري الإرسال…",
+    success: "شكراً! سنتواصل معك.",
+    error: "حدث خطأ. يرجى المحاولة مرة أخرى.",
   },
 };
