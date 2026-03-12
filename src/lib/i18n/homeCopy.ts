@@ -36,7 +36,7 @@ export const homeCopy: Record<
     back: "Back",
   },
   ar: {
-    heroHeading: "اكتشف الأفضل في البحرين، كلّه في مكان واحد",
+    heroHeading: "من اهلنا ولالهنا، إكتشف الأسواق المحلية",
     heroSubheading: "ندعم الأيدي المحلية ونوسع الحِرف الإقليمية.",
     explore: "استكشف",
     searchPlaceholder: "ابحث عن المنتجات",
