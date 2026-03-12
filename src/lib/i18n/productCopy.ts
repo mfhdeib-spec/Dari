@@ -23,6 +23,12 @@ export const productCopy: Record<
     delivery: string;
     payNow: string;
     continueShopping: string;
+    sizeChartTitle: string;
+    sizeChartAbayaLength: string;
+    sizeChartBodyHeight: string;
+    decreaseQuantity: string;
+    increaseQuantity: string;
+    addToFavourite: string;
   }
 > = {
   en: {
@@ -46,6 +52,12 @@ export const productCopy: Record<
     delivery: "Delivery",
     payNow: "Pay Now",
     continueShopping: "Continue shopping",
+    sizeChartTitle: "Abaya Size Chart (Centimeters)",
+    sizeChartAbayaLength: "Abaya Length",
+    sizeChartBodyHeight: "Recommended Body Height",
+    decreaseQuantity: "Decrease quantity",
+    increaseQuantity: "Increase quantity",
+    addToFavourite: "Add to favourite",
   },
   ar: {
     back: "رجوع",
@@ -68,6 +80,12 @@ export const productCopy: Record<
     delivery: "التوصيل",
     payNow: "ادفع الآن",
     continueShopping: "متابعة التسوق",
+    sizeChartTitle: "جدول مقاسات العباية (سم)",
+    sizeChartAbayaLength: "طول العباية",
+    sizeChartBodyHeight: "الطول المناسب للجسم",
+    decreaseQuantity: "تقليل الكمية",
+    increaseQuantity: "زيادة الكمية",
+    addToFavourite: "إضافة إلى المفضلة",
   },
 };
 

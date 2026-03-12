@@ -29,7 +29,7 @@ function matchesProductQuery(p: Product, query: string) {
 }
 
 export default function HomePageClient() {
-  const { locale, setLocale } = useLocale("en");
+  const { locale, setLocale } = useLocale();
   const [selectedCategory, setSelectedCategory] =
     useState<ProductCategoryKey>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,7 +67,7 @@ export default function HomePageClient() {
           placeholder={copy.searchPlaceholder}
         />
 
-        <section ref={productsRef} className="scroll-mt-24" aria-label="Products">
+        <section ref={productsRef} className="scroll-mt-24" aria-label={copy.productsSection}>
           <CategoryTabs
             locale={locale}
             categories={categories}

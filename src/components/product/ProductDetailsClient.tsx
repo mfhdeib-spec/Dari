@@ -12,6 +12,7 @@ import { homeCopy } from "@/lib/i18n/homeCopy";
 import { productCopy } from "@/lib/i18n/productCopy";
 import { useLocale } from "@/lib/i18n/useLocale";
 import { getProductDetails, type ProductSize } from "@/lib/mock/productDetails";
+import { abayaSizeChartRows } from "@/lib/mock/sizeChart";
 import type { Product } from "@/lib/mock/products";
 
 type Props = {
@@ -21,7 +22,7 @@ type Props = {
 
 export default function ProductDetailsClient({ product, youMightAlsoLike }: Props) {
   const router = useRouter();
-  const { locale, setLocale } = useLocale("en");
+  const { locale, setLocale } = useLocale();
   const { addItem } = useCart();
   const copy = homeCopy[locale];
   const pcopy = productCopy[locale];
@@ -59,7 +60,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
               alt={product.name[locale]}
               fill
               priority
-              className="object-cover"
+              className="object-cover object-top"
               sizes="(max-width: 1024px) 100vw, 560px"
             />
           </div>
@@ -81,32 +82,43 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
 
             <div className="mt-7 text-sm font-semibold text-neutral-900">{priceText}</div>
 
-            <div className="mt-8">
-              <div className="text-[10px] font-semibold tracking-widest text-neutral-500">
-                {pcopy.selectSize}
+            {product.category === "clothing" && (
+              <div className="mt-8">
+                <div className="text-[10px] font-semibold tracking-widest text-neutral-500">
+                  {pcopy.selectSize}
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {details.availableSizes.map((s) => {
+                    const active = s === selectedSize;
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setSelectedSize(s)}
+                        className={[
+                          "grid h-9 w-10 place-items-center rounded-md border text-xs font-medium transition",
+                          active
+                            ? "border-neutral-900 text-neutral-900"
+                            : "border-neutral-200 text-neutral-600 hover:border-neutral-400",
+                        ].join(" ")}
+                        aria-pressed={active}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+                {(() => {
+                const row = abayaSizeChartRows.find((r) => r.size === selectedSize);
+                if (!row) return null;
+                return (
+                  <p className="mt-3 text-sm text-neutral-900">
+                    {pcopy.sizeChartAbayaLength}: {row.abayaLength}  {pcopy.sizeChartBodyHeight}: {row.bodyHeight}
+                  </p>
+                );
+              })()}
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {details.availableSizes.map((s) => {
-                  const active = s === selectedSize;
-                  return (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setSelectedSize(s)}
-                      className={[
-                        "grid h-9 w-10 place-items-center rounded-md border text-xs font-medium transition",
-                        active
-                          ? "border-neutral-900 text-neutral-900"
-                          : "border-neutral-200 text-neutral-600 hover:border-neutral-400",
-                      ].join(" ")}
-                      aria-pressed={active}
-                    >
-                      {s}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            )}
 
             <div className="mt-8">
               <div className="text-[10px] font-semibold tracking-widest text-neutral-500">
@@ -117,7 +129,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
                   type="button"
                   className="grid h-9 w-10 place-items-center text-neutral-700 hover:bg-neutral-50"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  aria-label="Decrease quantity"
+                  aria-label={pcopy.decreaseQuantity}
                 >
                   −
                 </button>
@@ -128,7 +140,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
                   type="button"
                   className="grid h-9 w-10 place-items-center text-neutral-700 hover:bg-neutral-50"
                   onClick={() => setQuantity((q) => Math.min(99, q + 1))}
-                  aria-label="Increase quantity"
+                  aria-label={pcopy.increaseQuantity}
                 >
                   +
                 </button>
@@ -152,7 +164,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
                 className="grid h-12 w-12 place-items-center rounded-md border border-neutral-200 text-neutral-700 hover:bg-neutral-50"
                 onClick={() => setIsFavorite((v) => !v)}
                 aria-pressed={isFavorite}
-                aria-label="Add to favourite"
+                aria-label={pcopy.addToFavourite}
               >
                 <HeartIcon className={["h-5 w-5", isFavorite ? "fill-neutral-900 stroke-neutral-900" : ""].join(" ")} />
               </button>

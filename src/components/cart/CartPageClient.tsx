@@ -26,7 +26,7 @@ function formatPrice(price: number, currency: Product["currency"], locale: "en" 
 }
 
 export default function CartPageClient() {
-  const { locale, setLocale } = useLocale("en");
+  const { locale, setLocale } = useLocale();
   const { items } = useCart();
   const pcopy = productCopy[locale];
 

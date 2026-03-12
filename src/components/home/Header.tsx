@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { CartIcon, UserIcon } from "@/components/home/icons";
 import { useCart } from "@/context/CartContext";
-import type { HomeLocale } from "@/lib/i18n/homeCopy";
+import { homeCopy, type HomeLocale } from "@/lib/i18n/homeCopy";
 
 type Props = {
   locale: HomeLocale;
@@ -14,6 +15,7 @@ type Props = {
 
 export default function Header({ locale, onLocaleChange, showBackButton, backLabel }: Props) {
   const { totalItemCount, openCart } = useCart();
+  const copy = homeCopy[locale];
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/70">
       <div className="border-b border-black/5">
@@ -31,15 +33,28 @@ export default function Header({ locale, onLocaleChange, showBackButton, backLab
             <Link
               href="/"
               className="inline-flex items-center gap-2 font-semibold tracking-tight text-neutral-900"
-              aria-label="Dari"
+              aria-label={copy.dari}
             >
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-neutral-900 text-white">
-                D
+              <span className="relative h-9 w-9 overflow-hidden rounded-xl">
+                <Image
+                  src="/dari-logo.png"
+                  alt={copy.dari}
+                  fill
+                  className="object-contain"
+                  sizes="36px"
+                  priority
+                />
               </span>
             </Link>
           )}
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/join-business"
+              className="rounded-full bg-neutral-900 px-4 py-2 text-xs font-medium text-white hover:bg-neutral-800 sm:px-5 sm:py-2.5 sm:text-sm"
+            >
+              {copy.joinAsBusiness}
+            </Link>
             <div className="flex items-center rounded-full bg-neutral-100 p-1">
               <button
                 type="button"
@@ -70,7 +85,7 @@ export default function Header({ locale, onLocaleChange, showBackButton, backLab
             <button
               type="button"
               className="grid h-10 w-10 place-items-center rounded-full text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
-              aria-label="Account"
+              aria-label={copy.account}
             >
               <UserIcon className="h-5 w-5" />
             </button>
@@ -78,7 +93,7 @@ export default function Header({ locale, onLocaleChange, showBackButton, backLab
             <button
               type="button"
               className="relative grid h-10 w-10 place-items-center rounded-full text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
-              aria-label={totalItemCount > 0 ? `Cart (${totalItemCount} items)` : "Cart"}
+              aria-label={totalItemCount > 0 ? copy.cartWithCount.replace("{{count}}", String(totalItemCount)) : copy.cart}
               onClick={openCart}
             >
               <CartIcon className="h-5 w-5" />

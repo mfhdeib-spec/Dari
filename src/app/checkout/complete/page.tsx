@@ -1,10 +1,14 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { checkoutCopy } from "@/lib/i18n/checkoutCopy";
+import { useLocale } from "@/lib/i18n/useLocale";
 
 const TARGET_EMAIL = "m.f.hdeib@gmail.com";
 
 export default function CheckoutCompletePage() {
+  const { locale } = useLocale();
+  const copy = checkoutCopy[locale];
   const [email, setEmail] = useState("");
 
   function handleSubmit(e: FormEvent) {
@@ -20,12 +24,9 @@ export default function CheckoutCompletePage() {
     <div className="min-h-screen bg-white">
       <main className="mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6">
         <h1 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
-          You&apos;ve discovered us early! 🎉
+          {copy.title}
         </h1>
-        <p className="mt-3 text-neutral-700">
-          We aren&apos;t quite open for orders yet—we&apos;re still onboarding your
-          favorite local shops.
-        </p>
+        <p className="mt-3 text-neutral-700">{copy.description}</p>
 
         <form
           onSubmit={handleSubmit}
@@ -35,7 +36,7 @@ export default function CheckoutCompletePage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email"
+            placeholder={copy.emailPlaceholder}
             className="min-w-0 flex-1 rounded-lg border border-neutral-200 bg-white px-4 py-3 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400"
             required
           />
@@ -43,7 +44,7 @@ export default function CheckoutCompletePage() {
             type="submit"
             className="rounded-lg bg-neutral-900 px-6 py-3 text-sm font-medium text-white hover:bg-neutral-800"
           >
-            Submit
+            {copy.submit}
           </button>
         </form>
       </main>

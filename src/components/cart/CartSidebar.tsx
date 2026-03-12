@@ -24,7 +24,7 @@ function formatPrice(price: number, currency: Product["currency"], locale: "en" 
 
 export default function CartSidebar() {
   const router = useRouter();
-  const { locale } = useLocale("en");
+  const { locale } = useLocale();
   const { items, isCartOpen, closeCart, updateQuantity, removeItem } = useCart();
   const pcopy = productCopy[locale];
 
@@ -41,7 +41,7 @@ export default function CartSidebar() {
     const product = getProductById(item.productId);
     return sum + (product ? product.price * item.quantity : 0);
   }, 0);
-  const firstCurrency = items.length > 0 ? getProductById(items[0].productId)?.currency : "USD";
+  const firstCurrency = items.length > 0 ? (getProductById(items[0].productId)?.currency ?? "USD") : "USD";
   const totalFormatted = formatPrice(totalCents, firstCurrency, locale);
 
   return (
@@ -116,7 +116,7 @@ export default function CartSidebar() {
                           <button
                             type="button"
                             className="grid h-7 w-7 place-items-center text-neutral-600 hover:bg-neutral-50"
-                            aria-label="Decrease quantity"
+                            aria-label={pcopy.decreaseQuantity}
                             onClick={() => updateQuantity(item.productId, item.size, -1)}
                           >
                             −
@@ -127,7 +127,7 @@ export default function CartSidebar() {
                           <button
                             type="button"
                             className="grid h-7 w-7 place-items-center text-neutral-600 hover:bg-neutral-50"
-                            aria-label="Increase quantity"
+                            aria-label={pcopy.increaseQuantity}
                             onClick={() => updateQuantity(item.productId, item.size, 1)}
                           >
                             +

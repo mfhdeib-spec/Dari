@@ -11,7 +11,7 @@ function applyLocaleToDocument(locale: HomeLocale) {
   el.dir = locale === "ar" ? "rtl" : "ltr";
 }
 
-export function useLocale(defaultLocale: HomeLocale = "en") {
+export function useLocale(defaultLocale: HomeLocale = "ar") {
   const [locale, setLocale] = useState<HomeLocale>(defaultLocale);
 
   useEffect(() => {

@@ -10,6 +10,13 @@ export const homeCopy: Record<
     noProducts: string;
     inStock: string;
     outOfStock: string;
+    productsSection: string;
+    account: string;
+    cart: string;
+    cartWithCount: string;
+    dari: string;
+    joinAsBusiness: string;
+    back: string;
   }
 > = {
   en: {
@@ -20,6 +27,13 @@ export const homeCopy: Record<
     noProducts: "No products found.",
     inStock: "IN STOCK",
     outOfStock: "OUT OF STOCK",
+    productsSection: "Products",
+    account: "Account",
+    cart: "Cart",
+    cartWithCount: "Cart ({{count}} items)",
+    dari: "Dari",
+    joinAsBusiness: "Join as a Business",
+    back: "Back",
   },
   ar: {
     heroHeading: "اكتشف الأفضل في البحرين، كلّه في مكان واحد",
@@ -29,6 +43,13 @@ export const homeCopy: Record<
     noProducts: "لا توجد منتجات.",
     inStock: "متوفر",
     outOfStock: "غير متوفر",
+    productsSection: "المنتجات",
+    account: "الحساب",
+    cart: "السلة",
+    cartWithCount: "السلة ({{count}} عناصر)",
+    dari: "داري",
+    joinAsBusiness: "انضم كمتجر",
+    back: "رجوع",
   },
 };
 

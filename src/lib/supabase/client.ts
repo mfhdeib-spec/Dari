@@ -9,7 +9,7 @@ export function getSupabaseClient() {
     return {
       supabase: null,
       error: error ?? "Missing Supabase env.",
-    } as const;
+    };
   }
 
   return {
