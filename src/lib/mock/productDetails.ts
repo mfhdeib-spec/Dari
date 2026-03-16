@@ -11,52 +11,67 @@ export type ProductDetails = {
   defaultSize: ProductSize;
 };
 
+// Local Bahraini names – women for clothing, bakery, self care; men for crafts
+const bahrainiWomen: ProductDesigner[] = [
+  { name: { en: "Fatima", ar: "فاطمة" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Mariam", ar: "مريم" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Noor", ar: "نور" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Layla", ar: "ليلى" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Hessa", ar: "حصة" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Amal", ar: "أمل" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Zainab", ar: "زينب" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Noura", ar: "نورة" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Sara", ar: "سارة" }, subtitle: { en: "", ar: "" } },
+];
+const bahrainiMen: ProductDesigner[] = [
+  { name: { en: "Mohammed", ar: "محمد" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Ahmed", ar: "أحمد" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Ali", ar: "علي" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Hassan", ar: "حسان" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Khalid", ar: "خالد" }, subtitle: { en: "", ar: "" } },
+  { name: { en: "Hamad", ar: "حمد" }, subtitle: { en: "", ar: "" } },
+];
+
+const productIds = [
+  "p-abaya-01", "p-abaya-03", "p-abaya-04", "p-abaya-olive-accents", "p-abaya-grey-pattern",
+  "p-abaya-green-gold-lining", "p-abaya-silver-trim-ruffles", "p-thobe-black", "p-abaya-colorful-cuffs",
+  "p-abaya-gold-blue-embroidery", "p-abaya-gold-palm-embroidery", "p-abaya-royal-blue-velvet",
+  "p-abaya-royal-blue-embroidered", "p-abaya-deep-blue-embroidered", "p-abaya-maroon-velvet",
+  "p-craft-lantern", "p-craft-calligraphy-vase", "p-craft-lidded-basket", "p-craft-kilim-cushion",
+  "p-craft-woven-container", "p-craft-painted-carafe", "p-craft-baskets-set",
+  "p-bakery-white-bread", "p-bakery-rosemary-artisan", "p-bakery-brownies", "p-bakery-sourdough-loaf",
+  "p-bakery-chocolate-chip-brownies", "p-bakery-rustic-sourdough", "p-bakery-pumpkin-walnut",
+  "p-bakery-rosemary-sea-salt", "p-bakery-banana-walnut", "p-bakery-pumpkin-swirl",
+  "p-selfcare-rose-toner", "p-selfcare-nourishing-moisture", "p-selfcare-sandalwood-oil",
+  "p-selfcare-desert-bloom-cream",
+];
+
+function isCraftProduct(id: string): boolean {
+  return id.startsWith("p-craft-");
+}
+
+function buildProductDetailsById(): Record<string, ProductDetails> {
+  const out: Record<string, ProductDetails> = {};
+  let womenIndex = 0;
+  let menIndex = 0;
+  productIds.forEach((id) => {
+    const pool = isCraftProduct(id) ? bahrainiMen : bahrainiWomen;
+    const index = isCraftProduct(id) ? menIndex++ : womenIndex++;
+    out[id] = {
+      designer: pool[index % pool.length],
+      availableSizes: ["XS", "S", "M", "L", "XL"],
+      defaultSize: "S",
+    };
+  });
+  return out;
+}
+
+export const productDetailsById: Record<string, ProductDetails> = buildProductDetailsById();
+
 const defaultDetails: ProductDetails = {
-  designer: {
-    name: { en: "Fatma", ar: "فاطمة" },
-    subtitle: { en: "Designed and knitted by Fatma", ar: "مصمم ومحاك بواسطة فاطمة" },
-  },
+  designer: bahrainiWomen[0],
   availableSizes: ["XS", "S", "M", "L", "XL"],
   defaultSize: "S",
-};
-
-export const productDetailsById: Record<string, ProductDetails> = {
-  "p-abaya-01": defaultDetails,
-  "p-abaya-03": defaultDetails,
-  "p-abaya-04": defaultDetails,
-  "p-abaya-olive-accents": defaultDetails,
-  "p-abaya-grey-pattern": defaultDetails,
-  "p-abaya-green-gold-lining": defaultDetails,
-  "p-abaya-silver-trim-ruffles": defaultDetails,
-  "p-thobe-black": defaultDetails,
-  "p-abaya-colorful-cuffs": defaultDetails,
-  "p-abaya-gold-blue-embroidery": defaultDetails,
-  "p-abaya-gold-palm-embroidery": defaultDetails,
-  "p-abaya-royal-blue-velvet": defaultDetails,
-  "p-abaya-royal-blue-embroidered": defaultDetails,
-  "p-abaya-deep-blue-embroidered": defaultDetails,
-  "p-abaya-maroon-velvet": defaultDetails,
-  "p-craft-lantern": defaultDetails,
-  "p-craft-calligraphy-vase": defaultDetails,
-  "p-craft-lidded-basket": defaultDetails,
-  "p-craft-kilim-cushion": defaultDetails,
-  "p-craft-woven-container": defaultDetails,
-  "p-craft-painted-carafe": defaultDetails,
-  "p-craft-baskets-set": defaultDetails,
-  "p-bakery-white-bread": defaultDetails,
-  "p-bakery-rosemary-artisan": defaultDetails,
-  "p-bakery-brownies": defaultDetails,
-  "p-bakery-sourdough-loaf": defaultDetails,
-  "p-bakery-chocolate-chip-brownies": defaultDetails,
-  "p-bakery-rustic-sourdough": defaultDetails,
-  "p-bakery-pumpkin-walnut": defaultDetails,
-  "p-bakery-rosemary-sea-salt": defaultDetails,
-  "p-bakery-banana-walnut": defaultDetails,
-  "p-bakery-pumpkin-swirl": defaultDetails,
-  "p-selfcare-rose-toner": defaultDetails,
-  "p-selfcare-nourishing-moisture": defaultDetails,
-  "p-selfcare-sandalwood-oil": defaultDetails,
-  "p-selfcare-desert-bloom-cream": defaultDetails,
 };
 
 export function getProductDetails(productId: string): ProductDetails {

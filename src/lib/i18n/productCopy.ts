@@ -5,6 +5,7 @@ export const productCopy: Record<
   {
     back: string;
     by: string;
+    doneBy: string;
     selectSize: string;
     quantity: string;
     addToCart: string;
@@ -34,6 +35,7 @@ export const productCopy: Record<
   en: {
     back: "Back",
     by: "By",
+    doneBy: "Done by",
     selectSize: "SELECT SIZE",
     quantity: "QUANTITY",
     addToCart: "Add to cart",
@@ -62,6 +64,7 @@ export const productCopy: Record<
   ar: {
     back: "رجوع",
     by: "بواسطة",
+    doneBy: "من صنع",
     selectSize: "اختر المقاس",
     quantity: "الكمية",
     addToCart: "أضف إلى السلة",

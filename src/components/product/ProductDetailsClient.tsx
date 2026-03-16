@@ -15,6 +15,13 @@ import { getProductDetails, type ProductSize } from "@/lib/mock/productDetails";
 import { abayaSizeChartRows } from "@/lib/mock/sizeChart";
 import type { Product } from "@/lib/mock/products";
 
+const categoryEmoji: Record<Product["category"], string> = {
+  clothing: "👗",
+  bakery_snacks: "👨‍🍳",
+  crafts: "🎨",
+  self_care: "✨",
+};
+
 type Props = {
   product: Product;
   youMightAlsoLike: Product[];
@@ -33,7 +40,6 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
   const [isFavorite, setIsFavorite] = useState(false);
 
   const designerName = details.designer.name[locale];
-  const designerSubtitle = details.designer.subtitle[locale];
 
   const priceText = (() => {
     try {
@@ -53,7 +59,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
       <Header locale={locale} onLocaleChange={setLocale} showBackButton backLabel={pcopy.back} />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <section className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+        <section className="grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-200/70">
             <Image
               src={product.imageSrc}
@@ -65,29 +71,29 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
             />
           </div>
 
-          <div className="pt-2">
+          <div className="pt-4">
             <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 sm:text-3xl">
               {product.name[locale]}
             </h1>
 
-            <div className="mt-5 flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-neutral-200" aria-hidden="true" />
-              <div>
-                <div className="text-sm font-medium text-neutral-900">
-                  {pcopy.by} {designerName}
-                </div>
-                <div className="text-xs text-neutral-500">{designerSubtitle}</div>
+            <div className="mt-6 flex items-center gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-neutral-200 text-lg" aria-hidden="true">
+                {categoryEmoji[product.category]}
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <div className="text-sm font-normal text-neutral-500">{pcopy.doneBy}</div>
+                <div className="text-sm font-medium text-neutral-900">{designerName}</div>
               </div>
             </div>
 
-            <div className="mt-7 text-sm font-semibold text-neutral-900">{priceText}</div>
+            <div className="mt-8 text-sm font-semibold text-neutral-900">{priceText}</div>
 
             {product.category === "clothing" && (
-              <div className="mt-8">
+              <div className="mt-10">
                 <div className="text-[10px] font-semibold tracking-widest text-neutral-500">
                   {pcopy.selectSize}
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2">
                   {details.availableSizes.map((s) => {
                     const active = s === selectedSize;
                     return (
@@ -112,7 +118,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
                 const row = abayaSizeChartRows.find((r) => r.size === selectedSize);
                 if (!row) return null;
                 return (
-                  <p className="mt-3 text-sm text-neutral-900">
+                  <p className="mt-4 text-sm text-neutral-900">
                     {pcopy.sizeChartAbayaLength}: {row.abayaLength}  {pcopy.sizeChartBodyHeight}: {row.bodyHeight}
                   </p>
                 );
@@ -120,11 +126,11 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
               </div>
             )}
 
-            <div className="mt-8">
+            <div className="mt-10">
               <div className="text-[10px] font-semibold tracking-widest text-neutral-500">
                 {pcopy.quantity}
               </div>
-              <div className="mt-3 inline-flex items-center rounded-md border border-neutral-200">
+              <div className="mt-4 inline-flex items-center rounded-md border border-neutral-200">
                 <button
                   type="button"
                   className="grid h-9 w-10 place-items-center text-neutral-700 hover:bg-neutral-50"
@@ -147,7 +153,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
               </div>
             </div>
 
-            <div className="mt-10 flex items-center gap-3">
+            <div className="mt-12 flex items-center gap-4">
               <button
                 type="button"
                 className="inline-flex h-12 flex-1 items-center justify-center rounded-full bg-neutral-900 px-6 text-sm font-medium text-white hover:bg-neutral-800"
@@ -172,7 +178,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
           </div>
         </section>
 
-        <section className="mt-14">
+        <section className="mt-16">
           <div className="flex flex-col gap-2">
             <h2 className="text-xl font-semibold tracking-tight text-neutral-900">
               {pcopy.youMightAlsoLike}
@@ -182,7 +188,7 @@ export default function ProductDetailsClient({ product, youMightAlsoLike }: Prop
             </div>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-8">
             {youMightAlsoLike.slice(0, 4).map((p) => (
               <Link key={p.id} href={`/product/${p.id}`} className="block">
                 <ProductCard

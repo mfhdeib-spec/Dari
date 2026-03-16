@@ -36,7 +36,7 @@ export const homeCopy: Record<
     back: "Back",
   },
   ar: {
-    heroHeading: "من اهلنا ولالهنا، إكتشف الأسواق المحلية",
+    heroHeading: "من اهلنا ولأهلنا، إكتشف السوق البحريني",
     heroSubheading: "ندعم الأيدي المحلية ونوسع الحِرف الإقليمية.",
     explore: "استكشف",
     searchPlaceholder: "ابحث عن المنتجات",
