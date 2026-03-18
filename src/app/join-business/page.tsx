@@ -17,6 +17,8 @@ export default function JoinBusinessPage() {
   const [businessName, setBusinessName] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
+  const isRtl = locale === "ar";
+
   const allFilled =
     email.trim() !== "" && phone.trim() !== "" && businessName.trim() !== "";
 
@@ -53,13 +55,16 @@ export default function JoinBusinessPage() {
     <div className="min-h-screen bg-white">
       <Header locale={locale} onLocaleChange={setLocale} showBackButton backLabel={copy.back} />
 
-      <main className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-2xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6">
-        <h1 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
-          {bcopy.title}
-        </h1>
+      <main
+        className={`mx-auto flex min-h-[calc(100vh-4rem)] max-w-2xl flex-col justify-center px-4 py-10 sm:px-6 ${
+          isRtl ? "items-end text-right" : "items-start text-left"
+        }`}
+      >
+        <h1 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">{bcopy.title}</h1>
+        <p className="mt-4 text-neutral-700">{bcopy.subtitle}</p>
 
         {status === "success" ? (
-          <p className="mt-8 text-neutral-700" role="status">
+          <p className="mt-8 text-neutral-900 text-xl font-bold sm:text-2xl" role="status">
             {bcopy.success}
           </p>
         ) : (

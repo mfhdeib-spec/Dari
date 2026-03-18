@@ -22,9 +22,40 @@ function PinIcon({ className }: { className?: string }) {
   );
 }
 
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm9 2h-9A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.25-2.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
+    </svg>
+  );
+}
+
+function EmailIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4.25-8 4.75-8-4.75V6l8 4.75L20 6v2.25Z" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   const { locale } = useLocale();
   const isRtl = locale === "ar";
+
+  const emailAddress = "dariapp.bh@gmail.com";
+  const instagramUrl = "https://www.instagram.com/dari.appbh/";
 
   return (
     <footer
@@ -54,7 +85,24 @@ export default function Footer() {
             isRtl ? "sm:flex-row-reverse" : ""
           }`}
         >
-          <span>© dari.appbh</span>
+          <a
+            href={instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-1.5 hover:text-neutral-700"
+            aria-label="dari.appbh"
+          >
+            <InstagramIcon className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-700" />
+            <span>dari.appbh</span>
+          </a>
+          <a
+            href={`mailto:${emailAddress}`}
+            className="group flex items-center gap-1.5 hover:text-neutral-700"
+            aria-label={emailAddress}
+          >
+            <EmailIcon className="h-4 w-4 text-neutral-500 transition-colors group-hover:text-neutral-700" />
+            <span>{emailAddress}</span>
+          </a>
           <span className="flex items-center gap-1.5">
             <PinIcon className="h-4 w-4 text-neutral-500" />
             <span>Bahrain</span>
