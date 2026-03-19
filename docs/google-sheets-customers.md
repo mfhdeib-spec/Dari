@@ -1,7 +1,8 @@
-# Add signups to Google Sheets (Customers & Vendors)
+# Add signups and order totals to Google Sheets
 
 - **Checkout complete:** when a buyer submits their email, it is appended to the **Customers** sheet (Timestamp, Email).
 - **Join as a Business:** when someone submits email, phone, and business name, it is appended to the **Vendors** sheet (Timestamp, Email, Phone, Business Name).
+- **Pay Now:** each click appends the cart total to the **Orders** sheet (Timestamp, Total).
 
 The same Google Apps Script web app URL is used for both; the script writes to the correct sheet based on the payload.
 
@@ -11,7 +12,7 @@ The same Google Apps Script web app URL is used for both; the script writes to t
    [https://docs.google.com/spreadsheets/d/1AWst1lCtuNXODH9zyrSyVsw0MqY9vCy_yvmLdsAmOYw](https://docs.google.com/spreadsheets/d/1AWst1lCtuNXODH9zyrSyVsw0MqY9vCy_yvmLdsAmOYw)
 2. Go to **Extensions → Apps Script**.
 3. Replace the default code with the script below.
-4. The script will create **Customers** and **Vendors** sheets if they don’t exist, with the right headers.
+4. The script will create **Customers**, **Vendors**, and **Orders** sheets if they don’t exist, with the right headers.
 
 ### Apps Script code
 
@@ -22,6 +23,9 @@ function doPost(e) {
 
     if (body.type === "vendor") {
       return handleVendor(body);
+    }
+    if (body.type === "order") {
+      return handleOrder(body);
     }
     return handleCustomer(body);
   } catch (err) {
@@ -48,6 +52,16 @@ function handleVendor(body) {
   }
   var sheet = getOrCreateSheet("Vendors", ["Timestamp", "Email", "Phone", "Business Name"]);
   sheet.appendRow([new Date(), email, phone, businessName]);
+  return createResponse(200, { ok: true });
+}
+
+function handleOrder(body) {
+  var total = Number(body.total);
+  if (!isFinite(total) || total <= 0) {
+    return createResponse(400, { error: "Valid total is required." });
+  }
+  var sheet = getOrCreateSheet("Orders", ["Timestamp", "Total"]);
+  sheet.appendRow([new Date(), total]);
   return createResponse(200, { ok: true });
 }
 
@@ -94,3 +108,4 @@ Restart the dev server after changing `.env.local`. Then:
 
 - Checkout complete submissions → **Customers** sheet (Timestamp, Email).
 - Join as a Business submissions → **Vendors** sheet (Timestamp, Email, Phone, Business Name).
+- Pay Now clicks → **Orders** sheet (Timestamp, Total).

@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Header from "@/components/home/Header";
 import { useCart } from "@/context/CartContext";
 import { productCopy } from "@/lib/i18n/productCopy";
@@ -26,9 +28,11 @@ function formatPrice(price: number, currency: Product["currency"], locale: "en" 
 }
 
 export default function CartPageClient() {
+  const router = useRouter();
   const { locale, setLocale } = useLocale();
   const { items } = useCart();
   const pcopy = productCopy[locale];
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
 
   const displayCurrency: Product["currency"] =
     items.length > 0 ? getProductById(items[0].productId)?.currency ?? "USD" : "USD";
@@ -37,6 +41,20 @@ export default function CartPageClient() {
     return sum + (product ? product.price * item.quantity : 0);
   }, 0);
   const total = subtotal + DELIVERY_COST;
+
+  async function handlePayNow() {
+    if (isSubmittingOrder) return;
+    setIsSubmittingOrder(true);
+    try {
+      await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ total }),
+      });
+    } finally {
+      router.push("/checkout/complete");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -130,12 +148,14 @@ export default function CartPageClient() {
                     <span>{formatPrice(total, displayCurrency, locale)}</span>
                   </div>
                 </div>
-                <Link
-                  href="/checkout/complete"
-                  className="mt-4 block w-full rounded-full bg-neutral-900 py-3 text-center text-sm font-medium text-white hover:bg-neutral-800"
+                <button
+                  type="button"
+                  onClick={handlePayNow}
+                  disabled={isSubmittingOrder}
+                  className="mt-4 block w-full rounded-full bg-neutral-900 py-3 text-center text-sm font-medium text-white hover:bg-neutral-800 disabled:opacity-70"
                 >
                   {pcopy.payNow}
-                </Link>
+                </button>
               </div>
             </section>
           </div>
