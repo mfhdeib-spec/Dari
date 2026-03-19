@@ -48,6 +48,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
         return [...prev, { productId, size, quantity }];
       });
+      setIsCartOpen(true);
     },
     []
   );

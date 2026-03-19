@@ -1,6 +1,7 @@
 "use client";
 
 import CartSidebar from "@/components/cart/CartSidebar";
+import CartStickyCta from "@/components/cart/CartStickyCta";
 import Footer from "@/components/home/Footer";
 import { CartProvider as CartContextProvider } from "@/context/CartContext";
 import { LocaleProvider } from "@/context/LocaleContext";
@@ -14,6 +15,7 @@ export default function CartProvider({ children }: { children: React.ReactNode }
           <Footer />
         </div>
         <CartSidebar />
+        <CartStickyCta />
       </CartContextProvider>
     </LocaleProvider>
   );
