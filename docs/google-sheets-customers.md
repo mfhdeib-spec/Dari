@@ -109,3 +109,11 @@ Restart the dev server after changing `.env.local`. Then:
 - Checkout complete submissions → **Customers** sheet (Timestamp, Email).
 - Join as a Business submissions → **Vendors** sheet (Timestamp, Email, Phone, Business Name).
 - Pay Now clicks → **Orders** sheet (Timestamp, Total).
+
+## 4. Why the website uses a special POST (technical note)
+
+Google Apps Script Web App URLs often respond with a **redirect** (302/307). A normal server `fetch` can follow that redirect but **drop the JSON body**, so the script receives empty data and the sheet does not update.
+
+The Next.js API routes use a small helper ([`src/lib/postGoogleSheetsWebApp.ts`](../src/lib/postGoogleSheetsWebApp.ts)) that follows redirects **manually** and sends the same JSON on each step. You do not need to change your Apps Script for this.
+
+After pulling this behavior, **redeploy your production site** (e.g. Vercel) so the fix goes live, and ensure `GOOGLE_SHEETS_WEBAPP_URL` is set in production.

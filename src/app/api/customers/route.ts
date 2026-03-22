@@ -1,4 +1,8 @@
 import { NextResponse } from "next/server";
+import {
+  parseSheetsJsonResponse,
+  postGoogleSheetsWebApp,
+} from "@/lib/postGoogleSheetsWebApp";
 
 const WEBAPP_URL = process.env.GOOGLE_SHEETS_WEBAPP_URL;
 
@@ -29,22 +33,15 @@ export async function POST(request: Request) {
   }
 
   try {
-    const res = await fetch(WEBAPP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+    const { status, text } = await postGoogleSheetsWebApp(WEBAPP_URL, {
+      email,
     });
+    const data = parseSheetsJsonResponse(text);
+    const success =
+      status >= 200 && status < 300 && data.ok === true && !data.error;
 
-    const text = await res.text();
-    let data: { ok?: boolean; error?: string };
-    try {
-      data = JSON.parse(text);
-    } catch {
-      data = {};
-    }
-
-    if (!res.ok || data.error) {
-      console.error("Google Sheets webapp error:", res.status, text);
+    if (!success) {
+      console.error("Google Sheets webapp error:", status, text);
       return NextResponse.json(
         { error: "Failed to save to sheet." },
         { status: 502 }
