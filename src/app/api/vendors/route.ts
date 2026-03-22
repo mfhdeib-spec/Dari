@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import {
+  isSheetsResponseSuccess,
   parseSheetsJsonResponse,
   postGoogleSheetsWebApp,
 } from "@/lib/postGoogleSheetsWebApp";
@@ -44,10 +45,7 @@ export async function POST(request: Request) {
       businessName,
     });
     const data = parseSheetsJsonResponse(text);
-    const success =
-      status >= 200 && status < 300 && data.ok === true && !data.error;
-
-    if (!success) {
+    if (!isSheetsResponseSuccess(status, data, text)) {
       console.error("Google Sheets webapp error:", status, text);
       return NextResponse.json(
         { error: "Failed to save to sheet." },

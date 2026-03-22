@@ -114,6 +114,6 @@ Restart the dev server after changing `.env.local`. Then:
 
 Google Apps Script Web App URLs often respond with a **redirect** (302/307). A normal server `fetch` can follow that redirect but **drop the JSON body**, so the script receives empty data and the sheet does not update.
 
-The Next.js API routes use a small helper ([`src/lib/postGoogleSheetsWebApp.ts`](../src/lib/postGoogleSheetsWebApp.ts)) that follows redirects **manually** and sends the same JSON on each step. You do not need to change your Apps Script for this.
+The Next.js API routes use a small helper ([`src/lib/postGoogleSheetsWebApp.ts`](../src/lib/postGoogleSheetsWebApp.ts)) that **tries manual redirects with the same JSON body first**, then **falls back** to a normal `fetch` with redirect follow (for deployments that do not need the manual path).
 
 After pulling this behavior, **redeploy your production site** (e.g. Vercel) so the fix goes live, and ensure `GOOGLE_SHEETS_WEBAPP_URL` is set in production.
