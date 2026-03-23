@@ -21,6 +21,21 @@ function doPost(e) {
   try {
     var body = e.postData.contents ? JSON.parse(e.postData.contents) : {};
 
+    // Fallback: some deployments may drop/lose POST body on redirects.
+    // Read values from query params if they exist.
+    var param = e && e.parameter ? e.parameter : {};
+    if (!body.type && param.type) body.type = param.type;
+    if (body.total === undefined && param.total !== undefined) body.total = Number(param.total);
+    if (!body.totalDisplay && param.totalDisplay) body.totalDisplay = String(param.totalDisplay);
+    if (!body.currency && param.currency) body.currency = String(param.currency);
+    if (!body.items && param.items) {
+      try {
+        body.items = JSON.parse(String(param.items));
+      } catch (err) {
+        body.items = [];
+      }
+    }
+
     if (body.type === "vendor") {
       return handleVendor(body);
     }
@@ -140,8 +155,10 @@ Restart the dev server after changing `.env.local`. Then:
 
 ## 4. Why the website uses a special POST (technical note)
 
-Google Apps Script Web App URLs often respond with a **redirect** (302/307). A normal server `fetch` can follow that redirect but **drop the JSON body**, so the script receives empty data and the sheet does not update.
+Google Apps Script Web App URLs often respond with a **redirect** (302/307). In some deployments, a normal server `fetch` that follows redirects can **drop the JSON body**, so the script receives empty data.
 
-The Next.js API routes use a small helper ([`src/lib/postGoogleSheetsWebApp.ts`](../src/lib/postGoogleSheetsWebApp.ts)) that **tries manual redirects with the same JSON body first**, then **falls back** to a normal `fetch` with redirect follow (for deployments that do not need the manual path).
+To make this reliable, the Next.js helper (`src/lib/postGoogleSheetsWebApp.ts`) sends the same fields in:
+- the POST JSON body, and
+- query parameters (Apps Script can read them from `e.parameter`).
 
 After pulling this behavior, **redeploy your production site** (e.g. Vercel) so the fix goes live, and ensure `GOOGLE_SHEETS_WEBAPP_URL` is set in production.
