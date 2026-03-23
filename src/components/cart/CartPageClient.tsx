@@ -57,7 +57,7 @@ export default function CartPageClient() {
             quantity: item.quantity,
           };
         })
-        .filter((v): v is { label: string; size: string; quantity: number } => v !== null);
+        .filter((v): v is NonNullable<typeof v> => v !== null);
 
       const response = await fetch("/api/orders", {
         method: "POST",
