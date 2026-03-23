@@ -35,6 +35,42 @@ export function parseSheetsJsonResponse(text: string): {
   }
 }
 
+async function postWithManualRedirects(
+  startUrl: string,
+  payload: string
+): Promise<{ status: number; text: string }> {
+  let url = startUrl;
+  const maxRedirects = 8;
+
+  for (let i = 0; i < maxRedirects; i++) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+      redirect: "manual",
+    });
+
+    const status = res.status;
+    if (status >= 300 && status < 400) {
+      const location = res.headers.get("Location");
+      await res.text().catch(() => undefined);
+      if (!location) {
+        return {
+          status,
+          text: "Redirect without Location header from Google Apps Script",
+        };
+      }
+      url = new URL(location, url).toString();
+      continue;
+    }
+
+    const text = await res.text();
+    return { status, text };
+  }
+
+  return { status: 0, text: "Too many redirects from Google Apps Script URL" };
+}
+
 export async function postGoogleSheetsWebApp(
   webAppUrl: string,
   body: Record<string, unknown>
@@ -58,13 +94,7 @@ export async function postGoogleSheetsWebApp(
     return { status: 0, text: `Invalid GOOGLE_SHEETS_WEBAPP_URL: ${url}` };
   }
 
-  // Single request path: avoids duplicate order writes.
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: payload,
-    redirect: "follow",
-  });
-  const text = await res.text();
-  return { status: res.status, text };
+  // Use manual redirect handling so each hop keeps the same JSON body.
+  // This avoids Google Apps Script receiving an empty payload on some deployments.
+  return postWithManualRedirects(url, payload);
 }
