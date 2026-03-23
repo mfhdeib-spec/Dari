@@ -15,7 +15,12 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { total?: number };
+  let body: {
+    total?: number;
+    totalDisplay?: string;
+    currency?: string;
+    items?: Array<{ label?: string; size?: string; quantity?: number }>;
+  };
   try {
     body = await request.json();
   } catch {
@@ -34,10 +39,29 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { status, text } = await postGoogleSheetsWebApp(WEBAPP_URL, {
+    const items = Array.isArray(body.items) ? body.items : [];
+    const normalizedItems = items
+      .map((it) => ({
+        label: typeof it.label === "string" ? it.label.trim() : "",
+        size: typeof it.size === "string" ? it.size.trim() : "",
+        quantity:
+          typeof it.quantity === "number" && Number.isFinite(it.quantity) ? it.quantity : 0,
+      }))
+      .filter((it) => it.quantity > 0);
+
+    const payload: Record<string, unknown> = {
       type: "order",
       total,
-    });
+      items: normalizedItems,
+    };
+    if (typeof body.totalDisplay === "string" && body.totalDisplay.trim()) {
+      payload.totalDisplay = body.totalDisplay.trim();
+    }
+    if (typeof body.currency === "string" && body.currency.trim()) {
+      payload.currency = body.currency.trim();
+    }
+
+    const { status, text } = await postGoogleSheetsWebApp(WEBAPP_URL, payload);
     const data = parseSheetsJsonResponse(text);
     if (!isSheetsResponseSuccess(status, data, text)) {
       console.error("Google Sheets webapp error:", status, text);

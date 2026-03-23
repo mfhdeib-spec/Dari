@@ -2,7 +2,7 @@
 
 - **Checkout complete:** when a buyer submits their email, it is appended to the **Customers** sheet (Timestamp, Email).
 - **Join as a Business:** when someone submits email, phone, and business name, it is appended to the **Vendors** sheet (Timestamp, Email, Phone, Business Name).
-- **Pay Now:** each click appends the cart total to the **Orders** sheet (Timestamp, Total).
+- **Pay Now:** each click appends the cart total and item quantities to the **Orders** sheet (Timestamp, Total, Items).
 
 The same Google Apps Script web app URL is used for both; the script writes to the correct sheet based on the payload.
 
@@ -60,8 +60,36 @@ function handleOrder(body) {
   if (!isFinite(total) || total <= 0) {
     return createResponse(400, { error: "Valid total is required." });
   }
-  var sheet = getOrCreateSheet("Orders", ["Timestamp", "Total"]);
-  sheet.appendRow([new Date(), total]);
+
+  var totalDisplay = (body.totalDisplay || "").toString().trim();
+  var currency = (body.currency || "").toString().trim();
+  var items = body.items || [];
+
+  // Human-readable summary for quick viewing in Sheets.
+  // Example: "Abaya (S) x2, Lantern x1"
+  var itemsSummary = "";
+  try {
+    itemsSummary = items
+      .map(function (it) {
+        var label = (it.label || "Item").toString().trim();
+        var size = (it.size || "").toString().trim();
+        var qty = Number(it.quantity);
+        if (!isFinite(qty) || qty <= 0) qty = 0;
+        if (!size) {
+          return label + " x" + qty;
+        }
+        return label + " (" + size + ") x" + qty;
+      })
+      .filter(function (s) {
+        return s && !/^Item x0$/.test(s);
+      })
+      .join(", ");
+  } catch (e) {
+    itemsSummary = "";
+  }
+
+  var sheet = getOrCreateSheet("Orders", ["Timestamp", "Total", "Total Display", "Currency", "Items"]);
+  sheet.appendRow([new Date(), total, totalDisplay, currency, itemsSummary]);
   return createResponse(200, { ok: true });
 }
 
@@ -108,7 +136,7 @@ Restart the dev server after changing `.env.local`. Then:
 
 - Checkout complete submissions → **Customers** sheet (Timestamp, Email).
 - Join as a Business submissions → **Vendors** sheet (Timestamp, Email, Phone, Business Name).
-- Pay Now clicks → **Orders** sheet (Timestamp, Total).
+- Pay Now clicks → **Orders** sheet (Timestamp, Total, Items).
 
 ## 4. Why the website uses a special POST (technical note)
 

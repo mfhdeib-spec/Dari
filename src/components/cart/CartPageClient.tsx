@@ -41,18 +41,41 @@ export default function CartPageClient() {
     return sum + (product ? product.price * item.quantity : 0);
   }, 0);
   const total = subtotal + DELIVERY_COST;
+  const formattedTotal = formatPrice(total, displayCurrency, locale);
 
   async function handlePayNow() {
     if (isSubmittingOrder) return;
     setIsSubmittingOrder(true);
     try {
-      await fetch("/api/orders", {
+      const orderItems = items
+        .map((item) => {
+          const product = getProductById(item.productId);
+          if (!product) return null;
+          return {
+            label: product.name[locale],
+            size: item.size,
+            quantity: item.quantity,
+          };
+        })
+        .filter((v): v is { label: string; size: string; quantity: number } => v !== null);
+
+      const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ total }),
+        body: JSON.stringify({
+          total,
+          totalDisplay: formattedTotal,
+          currency: displayCurrency,
+          items: orderItems,
+        }),
       });
-    } finally {
+      if (!response.ok) {
+        console.error("Failed to save order:", response.status);
+        return;
+      }
       router.push("/checkout/complete");
+    } finally {
+      setIsSubmittingOrder(false);
     }
   }
 
@@ -145,7 +168,7 @@ export default function CartPageClient() {
                 <div className="border-t border-neutral-200 pt-3">
                   <div className="flex justify-between font-semibold text-neutral-900">
                     <span>{pcopy.total}</span>
-                    <span>{formatPrice(total, displayCurrency, locale)}</span>
+                    <span>{formattedTotal}</span>
                   </div>
                 </div>
                 <button
